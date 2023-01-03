@@ -1,19 +1,14 @@
 package com.example.demo.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Entity
 @Table(name="users")
-public class UserEntity {
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     private String username;
     private String email;
