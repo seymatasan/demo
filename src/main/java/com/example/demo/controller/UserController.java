@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
-import com.example.demo.request.UserRequest;
+import com.example.demo.request.CreateUserRequest;
 import com.example.demo.service.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public User postUser(@RequestParam UserRequest userRequest) {
+    public User postUser(@RequestParam CreateUserRequest userRequest) {
         return userService.postUser(userRequest);
     }
 

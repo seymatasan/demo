@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.request.UserRequest;
+import com.example.demo.request.CreateUserRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
