@@ -25,7 +25,7 @@ public class UserServiceImpl {
         return userRepository.findById(userId);
     }
 
-    public User postUser(UserRequest userRequest) {
+    public User postUser(CreateUserRequest userRequest) {
         User user = new User();
         user.setUsername(userRequest.getUserName());
         user.setEmail(userRequest.getEmail());
