@@ -4,6 +4,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.request.CreateUserRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +26,17 @@ public class UserServiceImpl {
         return userRepository.findById(userId);
     }
 
+
+
     public User postUser(CreateUserRequest userRequest) {
         User user = new User();
         user.setUsername(userRequest.getUserName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(user.getPassword());
         return userRepository.save(user);
+    }
+
+    public void deleteUser(String userId) {
+        userRepository.deleteById(userId);
     }
 }

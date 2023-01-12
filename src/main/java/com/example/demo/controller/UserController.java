@@ -35,7 +35,9 @@ public class UserController {
         return userService.postUser(userRequest);
     }
 
-
-
-
+    @DeleteMapping("/{id}")
+    public void deleteUser(@RequestParam String userId) {
+        userService.deleteUser(userId);
+    }
+    
 }
