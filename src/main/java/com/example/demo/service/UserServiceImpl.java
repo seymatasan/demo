@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.converter.UserDTOConvertor;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.request.CreateUserRequest;
@@ -9,11 +10,10 @@ import com.example.demo.request.UpdateUserRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl extends RuntimeException {
 
     private final UserRepository userRepository;
     private final UserDTOConvertor userDTOConvertor;
@@ -28,26 +28,38 @@ public class UserServiceImpl {
         return userRepository.findAll().stream().map(userDTOConvertor::convert).collect(Collectors.toList());
     }
 
-    public Optional<User> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    public UserDTO getUserById(Long id) {
+        User user = findUserById(id);
+        return userDTOConvertor.convert(user);
     }
 
-    public User postUser(CreateUserRequest userRequest) {
-        User user = new User();
-        user.setUsername(userRequest.getUserName());
-        user.setEmail(userRequest.getEmail());
-        user.setPassword(user.getPassword());
-        return userRepository.save(user);
+    public UserDTO postUser(CreateUserRequest userRequest) {
+        User createduser = new User();
+        createduser.setUsername(userRequest.getUserName());
+        createduser.setEmail(userRequest.getEmail());
+        createduser.setPassword(userRequest.getPassword());
+        return userDTOConvertor.convert(userRepository.save(createduser));
     }
 
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
-    public User putUser(UpdateUserRequest updateUserRequest) {
-        return new User(); // developed
+    public UserDTO putUser(Long id, UpdateUserRequest updateUserRequest) {
+        User user = findUserById(id);
+        User updatedUser = new User();
+        updatedUser.setUsername(user.getUsername());
+        updatedUser.setEmail(user.getEmail());
+        updatedUser.setPassword(user.getPassword());
+        return userDTOConvertor.convert(userRepository.save(updatedUser)); // developed
     }
 
-    public void deactiveUser(Long userId) {
+    public void deactiveUser(Long id) {
     }
+
+    private User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User couldn't found by following id: " + id));
+    }
+
+
 }

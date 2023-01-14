@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserDTOConvertor {
-
-    public UserDTO convert(User from) {
-        return new UserDTO(from.getUsername(), from.getEmail(),from.getPassword());
+public UserDTO convert (User from) {
+        return new UserDTO(from.getId(), from.getUsername(), from.getEmail(),from.getPassword());
     }
 }
