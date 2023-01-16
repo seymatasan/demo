@@ -6,5 +6,6 @@ import lombok.Value;
 public class UserDTO {
     private Long id;
     private String username, surname, email;
+    private Boolean isActive;
 
 }

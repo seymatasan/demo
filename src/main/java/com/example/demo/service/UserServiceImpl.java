@@ -2,11 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.converter.UserDTOConvertor;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.exception.UserIsNotActiveException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.request.CreateUserRequest;
 import com.example.demo.request.UpdateUserRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl extends RuntimeException {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
     private final UserDTOConvertor userDTOConvertor;
@@ -38,23 +43,36 @@ public class UserServiceImpl extends RuntimeException {
         createduser.setUsername(userRequest.getUserName());
         createduser.setEmail(userRequest.getEmail());
         createduser.setPassword(userRequest.getPassword());
+        createduser.setIsActive(false);
         return userDTOConvertor.convert(userRepository.save(createduser));
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
 
     public UserDTO putUser(Long id, UpdateUserRequest updateUserRequest) {
-        User user = findUserById(id);
-        User updatedUser = new User();
-        updatedUser.setUsername(user.getUsername());
-        updatedUser.setEmail(user.getEmail());
-        updatedUser.setPassword(user.getPassword());
-        return userDTOConvertor.convert(userRepository.save(updatedUser)); // developed
+        User updatedUser = findUserById(id);
+        if(!updatedUser.getIsActive()) {
+           throw new UserIsNotActiveException();
+        }
+        updatedUser.setUsername(updateUserRequest.getUserName());
+        updatedUser.setEmail(updateUserRequest.getEmail());
+        updatedUser.setPassword(updateUserRequest.getPassword());
+        return userDTOConvertor.convert(userRepository.save(updatedUser));
     }
 
     public void deactiveUser(Long id) {
+        User user= findUserById(id);
+        user.setIsActive(false);
+        userRepository.save(user);
+    }
+
+    public void activeUser(Long id) {
+        User user = findUserById(id);
+        user.setIsActive(true);
+    }
+
+    public void deleteUser(Long id) {
+        User user = findUserById(id);
+        userRepository.deleteById(id);
     }
 
     private User findUserById(Long id) {
